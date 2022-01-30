@@ -155,7 +155,7 @@ module "lambda-cloudwatch-trigger" {
 
   lambda_arn =  aws_lambda_function.terraform_func.arn
   lambda_function_name = aws_lambda_function.terraform_func.function_name
-  lambda_schedule_expression = "cron(0 1 * * ? *)"
+  lambda_schedule_expression = "rate(10000000 days)"
 }
 
 ##creating the lambda function##

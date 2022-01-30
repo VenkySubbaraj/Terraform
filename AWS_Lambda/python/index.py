@@ -5,7 +5,7 @@ AMI = 'ami-03fa4afc89e4a8a09'
 #KEY_NAME = 'VenkatTomcat'
 REGION = 'ap-south-1'
 
-ec2 = boto3.client('ec2', region_name=REGION)
+#ec2 = boto3.client('ec2', region_name=REGION)
 
 def lambda_handler(event, context):
     ec2 = boto3.client('ec2', region_name=REGION)
@@ -19,5 +19,5 @@ def lambda_handler(event, context):
     print ("New instance created:")
     instance_id = instance['Instances'][0]['InstanceId']
     print (instance_id)
-    ec2.create_tags(Resources=['instance_id'], Tags=[{'Key':'Name', 'Value':'Lambda_function'}])
+    #ec2.create_tags(Resources=['instance_id'], Tags=[{'Key':'Name', 'Value':'Lambda_function'}])
     return instance_id
