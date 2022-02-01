@@ -76,7 +76,7 @@ output "public_ip" {
  value = local.ifconfig_co_json.ip
 }
 
-##Adding security group rules of Master_Instance to Slave instance ##
+## creating the Slave Instance Security Group ##
 
 
 resource "aws_security_group" "Allow" {
@@ -111,7 +111,7 @@ tags = {
 }
 }
 
-## creating the Slave Instance Security Group  ##
+##  Adding security group rules of Master_Instance to Slave instance ##
 
 #resource "aws_security_group_rule" "Slave_inbound_ICMP"{
 #type = "ingress"
