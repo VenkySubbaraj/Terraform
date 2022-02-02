@@ -34,3 +34,13 @@ resource "aws_iam_role_policy_attachment" "ssm_policy_role" {
  role = aws_iam_role.lambda_role.name
  policy_arn = aws_iam_policy.policy_for_SSM.arn
 }
+
+resource "aws_iam_role_policy_attachment" "AmazonElasticMapEC2" {
+ role = aws_iam_role.lambda_role.name
+ policy_arn = aws_iam_policy.AmazonElasticMapEC2.arn
+}
+
+resource "aws_iam_role_policy_attachment" "AmazonElasticMap" {
+ role = aws_iam_role.lambda_role.name
+ policy_arn = aws_iam_policy.AmazonElasticMap.arn
+}
