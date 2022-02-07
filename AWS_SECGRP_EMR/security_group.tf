@@ -2,69 +2,42 @@
 provider "aws" {
 region = "ap-south-1"
 }
+
 resource "aws_default_vpc" "default" {}
 
 resource "aws_security_group" "allow" {
- name = "Master_Instance"
+ name = var.security_group_name
  description = "Allow TLS in transcript"
  vpc_id = aws_default_vpc.default.id
 
-## @Inbound Rules ##
-ingress {
-from_port = 0
-to_port = 65535
-protocol = "tcp"
-cidr_blocks= ["${aws_default_vpc.default.cidr_block}"]
-}
-
-## @ALL_ICMP_IPV4 Protocol ##
-ingress {
-from_port = 8
-to_port = 0
-protocol = "icmp"
-cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-}
-
-## @UDP_Security_group##
-ingress {
-from_port = 0
-to_port = 65535
-protocol = "udp"
-cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-}
-
-## @Custom_TCP_part##
-ingress {
-from_port = 8443
-to_port = 8443
-protocol = "tcp"
-cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-}
-## @SSH_MY_IP_PART ##
-ingress {
-from_port = 22
-to_port = 22
-protocol = "tcp"
-cidr_blocks = ["${local.ifconfig_co_json.ip}/32"]
-}
-
 ## @Outbnound Rules ##
-egress {
-from_port = 0
-to_port = 0
-cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-protocol = "-1"
+ egress {
+ from_port = var.outbound_rule_fromport[0]
+ to_port = var.outbound_rule_toport[0]
+ cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
+ protocol = "-1"
 }
 
-tags = {
-Name = "Master_Instance_SG"
+ tags = {
+ Name = "Master_Instance_SG"
+ }
+ }
+
+resource "aws_security_group_rule" "Master_Instance_sg-rule" {
+ count = 5 
+ type = "ingress"
+ from_port = var.inbound_fromport[count.index]
+ to_port = var.inbound_toport[count.index]
+ protocol = var.protocol[count.index]
+ cidr_blocks = [aws_default_vpc.default.cidr_block]
+ security_group_id = aws_security_group.allow.id
 }
-}
+
 
 data "http" "public_ip" {
  url = "https://ifconfig.co/json"
  request_headers = {
-  Accept = "application.json"
+ Accept = "application.json"
 }
 }
 
@@ -83,62 +56,18 @@ resource "aws_security_group" "Allow" {
  name = "Slave-Instance"
  description = "Allow TLS in transcript"
  vpc_id = aws_default_vpc.default.id
-
-ingress {
-from_port = 8
-to_port = 0
-protocol = "icmp"
-cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
+ tags = {
+   Name = "Slave-Instance"
+ }
 }
 
-## @UDP_Security_group##
-ingress {
-from_port = 0
-to_port = 65535
-protocol = "udp"
-cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
+resource "aws_security_group_rule" "Slave_Instance_sg_rule" {
+ count = 3
+ type = "ingress"
+ from_port = var.inbound_fromport[count.index]
+ to_port = var.inbound_toport[count.index]
+ protocol = var.protocol[count.index]
+ security_group_id = "${aws_security_group.Allow.id}"
+ cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
 }
 
-## @Custom_TCP_part##
-ingress {
-from_port = 8443
-to_port = 8443
-protocol = "tcp"
-cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-}
-tags = {
-  Name = "Slave-Instance"
-}
-}
-
-##  Adding security group rules of Master_Instance to Slave instance ##
-
-#resource "aws_security_group_rule" "Slave_inbound_ICMP"{
-#type = "ingress"
-#from_port = 8
-#to_port = 0
-#protocol = "icmp"
-#security_group_id = "${aws_security_group.allow.id}"
-#cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-#}
-
-## @UDP_Security_group##
-#resource "aws_security_group_rule" "Slave_inbound_udp"{
-#type = "ingress"
-#from_port = 0
-#to_port = 65535
-#protocol = "udp"
-#security_group_id = "${aws_security_group.allow.id}"
-#cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-#}
-
-
-## @Custom_TCP_part##
-#resource "aws_security_group_rule" "Slave_inbound_tcp"{
-#type = "ingress"
-#from_port = 8443
-#to_port = 8443
-#protocol = "tcp"
-#security_group_id = "${aws_security_group.allow.id}"
-#cidr_blocks = ["${aws_default_vpc.default.cidr_block}"]
-#}
