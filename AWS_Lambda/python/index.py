@@ -1,4 +1,6 @@
 import boto3
+from botocore.exceptions import ClientError
+
 
 AMI = 'ami-03fa4afc89e4a8a09'
 #INSTANCE_TYPE = 't2.micro'
@@ -21,3 +23,4 @@ def lambda_handler(event, context):
     print (instance_id)
     #ec2.create_tags(Resources=['instance_id'], Tags=[{'Key':'Name', 'Value':'Lambda_function'}])
     return instance_id
+
