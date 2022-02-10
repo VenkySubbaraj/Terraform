@@ -8,7 +8,10 @@ assume_role_policy = <<EOF
    {
      "Action": "sts:AssumeRole",
      "Principal": {
-       "Service": "lambda.amazonaws.com"
+       "Service": [
+	    "lambda.amazonaws.com",
+	    "ec2.amazonaws.com"
+        ]
      },
      "Effect": "Allow",
      "Sid": ""
