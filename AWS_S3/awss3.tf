@@ -5,4 +5,7 @@ resource "aws_s3_bucket" "dockercontainer" {
 	tags = {
 		Name = "DockerContainer2"
 	}
+	expiration {
+	    days = 90
+	}
 }
