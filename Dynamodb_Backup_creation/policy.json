@@ -1,0 +1,48 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "S3Access",
+            "Effect": "Allow",
+            "Action": [
+                "s3:ListAllMyBuckets",
+                "s3:PutObject",
+                "s3:GetObject",
+                "s3:ListBucket"
+            ],
+            "Resource": [
+              "*"
+            ]
+        },
+        {
+            "Sid": "DynamoDBAccess",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:CreateBackup",
+                "dynamodb:RestoreTableFromBackup",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem",
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:BatchWriteItem",
+                "dynamodb:UpdateContinuousBackups",
+                "dynamodb:DescribeContinuousBackups",
+                "dynamodb:DescribeTable",
+                "dynamodb:DescribeBackup",
+                "dynamodb:RestoreTableToPointInTime",
+                "dynamodb:ListBackups",
+                "dynamodb:CreateTable",
+                "dynamodb:TagResource",
+                "dynamodb:DescribeTimeToLive",
+                "dynamodb:ListTagsOfResource",
+                "dynamodb:DeleteTable"
+            ],
+            "Resource": [
+                "arn:aws:dynamodb:eu-central-1:*:table/RawEventEntity-*",
+                "arn:aws:dynamodb:eu-central-1:*:table/terraform_lock"
+            ]
+        }
+    ]
+}
